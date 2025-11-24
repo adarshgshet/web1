@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Admin Dashboard</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="order.html">Order</a>
+        <a href="admin.html">Admin</a>
+    </nav>
+</header>
+
+<section class="menu-section">
+    <h2>All Orders</h2>
+    <button onclick="loadOrders()">Refresh</button>
+    <div id="ordersList"></div>
+</section>
+
+<script>
+function loadOrders() {
+    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    let output = "";
+
+    orders.forEach((order, i) => {
+        output += `
+            <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                <h3>Order ${i+1}</h3>
+                <p><b>Name:</b> ${order.name}</p>
+                <p><b>Phone:</b> ${order.phone}</p>
+                <p><b>Items:</b></p>
+                <ul>
+                    ${order.cart.map(c => `<li>${c.name} - $${c.price}</li>`).join("")}
+                </ul>
+            </div>
+        `;
+    });
+
+    document.getElementById("ordersList").innerHTML = output;
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>

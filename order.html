@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Coffee</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Coffee Cafe</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="order.html">Order</a>
+        <a href="admin.html">Admin</a>
+    </nav>
+</header>
+
+<section class="menu-section">
+    <h2>Your Cart</h2>
+
+    <div id="cartList"></div>
+    <h3 id="totalPrice"></h3>
+
+    <h3>Your Details</h3>
+    <input id="custName" placeholder="Name"><br><br>
+    <input id="custPhone" placeholder="10-digit Phone"><br><br>
+
+    <button onclick="placeOrder()">Place Order</button>
+    <p id="orderResponse"></p>
+
+    <br><br>
+    <hr>
+    <h3>Admin Tools</h3>
+
+    <!-- NEW BUTTON ADDED -->
+    <button style="background:red" onclick="clearAllOrders()">Clear ALL Orders</button>
+    <p id="clearMsg" style="color:green;"></p>
+</section>
+
+<script>
+// LOAD CART
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+function loadCart() {
+    const list = document.getElementById("cartList");
+    let total = 0;
+
+    list.innerHTML = "";
+    cart.forEach(item => {
+        list.innerHTML += `<p>${item.name} - $${item.price.toFixed(2)}</p>`;
+        total += item.price;
+    });
+
+    document.getElementById("totalPrice").innerText =
+        "Total: $" + total.toFixed(2);
+}
+
+loadCart();
+
+// PLACE ORDER
+function placeOrder() {
+    const name = document.getElementById("custName").value;
+    const phone = document.getElementById("custPhone").value;
+
+    if (!name || !/^\d{10}$/.test(phone)) {
+        alert("Phone must be exactly 10 digits.");
+        return;
+    }
+
+    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+    orders.push({ name, phone, cart });
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    localStorage.removeItem("cart");
+    cart = [];
+
+    document.getElementById("orderResponse").innerText =
+        "Order submitted successfully!";
+
+    loadCart();
+}
+
+// CLEAR ALL ORDERS (NEW FUNCTION)
+function clearAllOrders() {
+    if (confirm("Are you sure you want to delete ALL orders?")) {
+        localStorage.removeItem("orders");
+
+        document.getElementById("clearMsg").innerText =
+            "All orders cleared successfully!";
+    }
+}
+</script>
+
+</body>
+</html>
